@@ -20,7 +20,7 @@ class CardSUITS(CardBasics):
 
     def test_should_have_the_four_card_suits(self):
         for suit in self.SUITS:
-            self.assertTrue(suit in Card.SUITS)
+            self.assertIn(suit, Card.SUITS)
 
 
 class CardVALUES(CardBasics):
@@ -29,11 +29,10 @@ class CardVALUES(CardBasics):
 
     def test_should_have_all_the_set_of_cards(self):
         for rank in self.VALUES.keys():
-            self.assertTrue(rank in Card.VALUES)
+            self.assertIn(rank, Card.VALUES)
 
     def test_ranks_should_have_correct_values(self):
-        for rank in self.VALUES.keys():
-            self.assertTrue(self.VALUES[rank] == Card.VALUES[rank])
+        self.assertDictEqual(self.VALUES, Card.VALUES)
 
 
 class CardStr(CardBasics):
@@ -76,6 +75,7 @@ class HandBasics(TestCase):
         self.hand = Hand()
         self.ac = Card('C', 'A')
         self.hand.add_card(self.ac)
+        self.deck = Deck()
 
 
 class HandClass(TestCase):
@@ -105,7 +105,60 @@ class HandLenght(HandBasics):
 class HandAddCard(HandBasics):
     def test_be_defined(self):
         self.assertTrue(hasattr(Hand, 'add_card'))
-        
+
+    def test_should_accept_a_card(self):
+        self.assertIsNone(self.hand.add_card(Card('D', 'A')))
+
+    def test_hand_lenght_gets_larger(self):
+        befor_size = len(self.hand)
+        self.hand.add_card(Card('S', 'A'))
+        self.assertEqual(len(self.hand), befor_size + 1)
+
+
+class HandGetValue(HandBasics):
+    def test_be_defined(self):
+        self.assertTrue(hasattr(Hand, 'get_value'))
+
+    def test_return_integer(self):
+        self.assertEqual(type(self.hand.get_value()), int)
+
+    def test_return_the_actual_value(self):
+        local_hand = Hand()
+        self.assertEqual(local_hand.get_value(), 0)
+        local_hand.add_card(Card('C', '2'))
+        self.assertEqual(local_hand.get_value(), 2)
+        local_hand.add_card(Card('S', '9'))
+        self.assertEqual(local_hand.get_value(), 11)
+
+    def test_ace_has_speciall_value(self):
+        local_hand = Hand()
+        self.assertEqual(local_hand.get_value(), 0)
+        local_hand.add_card(Card('S', 'A'))
+        self.assertEqual(local_hand.get_value(), 11)
+        local_hand.add_card(Card('H', 'T'))
+        self.assertEqual(local_hand.get_value(), 11)
+
+
+class HandHit(HandBasics):
+    def test_be_defined(self):
+        self.assertTrue(hasattr(Hand, 'hit'))
+
+    def test_should_accept_a_deck(self):
+        self.assertIsNone(self.hand.hit(self.deck))
+
+
+class HandBusted(HandBasics):
+    def test_be_defined(self):
+        self.assertTrue(hasattr(Hand, 'busted'))
+
+    def test_should_show_when_21_limit_is_passed(self):
+        local_hand = Hand()
+        self.assertFalse(local_hand.busted())
+        local_hand.add_card(Card('S', 'T'))
+        local_hand.add_card(Card('H', 'J'))
+        local_hand.add_card(Card('D', '2'))
+        self.assertTrue(local_hand.busted())
+
 
 class DeckBasics(TestCase):
     pass
