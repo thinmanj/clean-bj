@@ -103,6 +103,7 @@ class Game(object):
     def __str__(self):
         if not self.in_play:
             return ""    
+
         return """
 Game:
 Game chips: %d
@@ -131,12 +132,14 @@ Player chips: %s
     def deal(self, chips=1):
         if self.player_chips <= 0 or chips > self.player_chips:
             raise Exception("No enough chips.")
+
         self.in_play = True
         self.deck = Deck()
         self.dealer = Hand()
         self.player = Hand()
         self.player_chips -= chips
         self.game_chips = chips
+
         for x in range(2):
             self.dealer.hit(self.deck)
             self.player.hit(self.deck)
@@ -144,6 +147,7 @@ Player chips: %s
     def hit(self):
         if not self.in_play:
             return
+
         try:
             self.player.hit(self.deck)
         except Exception:
@@ -170,7 +174,7 @@ Player chips: %s
     
         if self.player.get_value() > self.dealer.get_value():
             self.won()
-        if self.player.get_value() < self.dealer.get_value():
+        elif self.player.get_value() < self.dealer.get_value():
             self.lost()
         else:
             self.tie()
