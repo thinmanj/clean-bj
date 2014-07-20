@@ -36,6 +36,9 @@ class Hand(object):
         self.ace = False
         self.value = 0
 
+    def __len__(self):
+        return len(self.hand)
+
     def __str__(self):
         return ', '.join([str(card) for card in self.hand])
     

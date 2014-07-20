@@ -41,7 +41,7 @@ class CardStr(CardBasics):
         self.assertTrue(hasattr(Card, '__str__'))
 
     def test_return_a_string(self):
-        self.assertEqual(type(str(self.ac)), str)
+        self.assertEqual(type(self.ac.__str__()), str)
 
     def test_random_string(self):
         self.assertEqual(str(self.ac), 'A(C)')
@@ -72,17 +72,40 @@ class CardGetValue(CardBasics):
 
 
 class HandBasics(TestCase):
-    pass
+    def setUp(self):
+        self.hand = Hand()
+        self.ac = Card('C', 'A')
+        self.hand.add_card(self.ac)
 
 
 class HandClass(TestCase):
     def test_type_of_instance(self):
         self.assertEqual(type(Hand()), Hand)
 
-class HandStr(TestCase):
+
+class HandStr(HandBasics):
     def test_be_defined(self):
         self.assertTrue(hasattr(Hand, '__str__'))
 
+    def test_return_a_sting(self):
+        self.assertEqual(type(self.hand.__str__()), str)
+
+    def test_random_string(self):
+        self.assertEqual(str(self.ac), 'A(C)')
+
+
+class HandLenght(HandBasics):
+    def test_be_defined(self):
+        self.assertTrue(hasattr(Hand, '__len__'))
+
+    def test_return_a_int(self):
+        self.assertEqual(type(self.hand.__len__()), int)
+
+
+class HandAddCard(HandBasics):
+    def test_be_defined(self):
+        self.assertTrue(hasattr(Hand, 'add_card'))
+        
 
 class DeckBasics(TestCase):
     pass
