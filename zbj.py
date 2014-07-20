@@ -46,6 +46,8 @@ class Hand(object):
             self.ace = True
         self.value += card.get_value()
         if self.value > 21:
+            self.value = 0
+            self.ace = 0
             raise Exception("Busted!")
 
     def get_value(self):
@@ -55,7 +57,10 @@ class Hand(object):
             return self.value
     
     def hit(self, deck):
-        self.add_card(deck.deal_card())
+        card = deck.deal_card()
+        print str(card)
+        self.add_card(card)
+        
 
     def busted(self):
         if self.get_value() > 21:
@@ -106,29 +111,22 @@ Player hand: %s
 Player chips: %s
         """ % (self.game_chips, str(self.dealer), str(self.player), self.player_chips)
 
-    def new_game(self):
-        if self.player_chips:
-            print "New game?"
-
     def won(self):
         print "You won!"
         self.player_chips += 2 * self.game_chips
         self.game_chips = 0
         self.in_play = False
-        self.new_game()
 
     def lost(self):
         print "You lost!"
         self.game_chips = 0
         self.in_play = False
-        self.new_game()
 
     def tie(self):
         print "It's a tie!"
         self.player_chips += self.game_chips
         self.game_chips = 0
         self.in_play = False
-        self.new_game()
 
     def deal(self, chips=1):
         if self.player_chips <= 0 or chips > self.player_chips:
@@ -152,10 +150,12 @@ Player chips: %s
             self.in_play = False
             print "You went bust!"
             self.lost()
+            raise Exception("Lost!")
 
         if self.player.get_value() == 21:
             print "Black Jack!"
             self.won()
+            raise Exception("Won!")
 
     def stand(self):
         if not self.in_play:
@@ -165,15 +165,15 @@ Player chips: %s
             try:
                 self.dealer.hit(self.deck)
             except Exception:
-                print "Dealer Busted!"                
-                self.won()
-            else:    
-                if self.player.get_value() > self.dealer.get_value():
-                    self.won()
-                if self.player.get_value() < self.dealer.get_value():
-                    self.lost()
-                else:
-                    self.tie()
+                print "Dealer Busted!"
+                self.in_play = False
+    
+        if self.player.get_value() > self.dealer.get_value():
+            self.won()
+        if self.player.get_value() < self.dealer.get_value():
+            self.lost()
+        else:
+            self.tie()
 
 
 def play():
