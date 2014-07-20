@@ -41,10 +41,10 @@ class CardStr(CardBasics):
         self.assertTrue(hasattr(Card, '__str__'))
 
     def test_return_a_string(self):
-        self.assertTrue(type(str(self.ac)), str)
+        self.assertEqual(type(str(self.ac)), str)
 
     def test_random_string(self):
-        self.assertTrue(str(self.ac) == 'A(C)')
+        self.assertEqual(str(self.ac), 'A(C)')
 
 
 class CardGetSuit(CardBasics):
@@ -52,7 +52,7 @@ class CardGetSuit(CardBasics):
         self.assertTrue(hasattr(Card, 'get_suit'))
 
     def test_return_card_suit(self):
-        self.assertTrue(self.ac.get_suit() == 'C')
+        self.assertEqual(self.ac.get_suit(), 'C')
 
 
 class CardGetRank(CardBasics):
@@ -60,7 +60,7 @@ class CardGetRank(CardBasics):
         self.assertTrue(hasattr(Card, 'get_rank'))
 
     def test_return_card_rank(self):
-        self.assertTrue(self.ac.get_rank() == 'A')
+        self.assertEqual(self.ac.get_rank(), 'A')
 
 
 class CardGetValue(CardBasics):
@@ -68,11 +68,20 @@ class CardGetValue(CardBasics):
         self.assertTrue(hasattr(Card, 'get_value'))
 
     def test_return_card_value(self):
-        self.assertTrue(self.ac.get_value() == 1)
+        self.assertEqual(self.ac.get_value(), 1)
 
 
 class HandBasics(TestCase):
     pass
+
+
+class HandClass(TestCase):
+    def test_type_of_instance(self):
+        self.assertEqual(type(Hand()), Hand)
+
+class HandStr(TestCase):
+    def test_be_defined(self):
+        self.assertTrue(hasattr(Hand, '__str__'))
 
 
 class DeckBasics(TestCase):
