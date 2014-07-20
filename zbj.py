@@ -161,7 +161,7 @@ Player chips: %s
         if not self.in_play:
             return
 
-        while self.dealer.get_value() < 17:
+        while self.dealer.get_value() < 17 and self.in_play:
             try:
                 self.dealer.hit(self.deck)
             except Exception:
