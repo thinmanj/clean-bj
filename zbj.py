@@ -32,9 +32,7 @@ class Card(object):
 
 class Hand(object):
     def __init__(self):
-        self.hand = []
-        self.ace = False
-        self.value = 0
+        self.clear()
 
     def __len__(self):
         return len(self.hand)
@@ -47,6 +45,8 @@ class Hand(object):
         if card.get_rank() == 'A':
             self.ace = True
         self.value += card.get_value()
+        if self.value > 21:
+            raise Exception("Busted!")
 
     def get_value(self):
         if self.ace and self.value <= 10:
@@ -61,11 +61,15 @@ class Hand(object):
         if self.get_value() > 21:
             return True
 
+    def clear(self):
+        self.hand = []
+        self.ace = False
+        self.value = 0
+
 
 class Deck(object):
     def __init__(self):
-        self.deck = [Card(s, r) for s in Card.SUITS for r in Card.VALUES.keys()]
-        self.shuffle()
+        self.clear()
 
     def __len__(self):
         return len(self.deck)
@@ -79,14 +83,92 @@ class Deck(object):
     def deal_card(self):
         return self.deck.pop()
 
+    def clear(self):
+        self.deck = [Card(s, r) for s in Card.SUITS for r in Card.VALUES.keys()]
+        self.shuffle()
 
-def deal():
+
+class Game(object):
+    def __init__(self):
+        self.deal()
+        self.player_chips = 100
+        self.game_chips = 0
+
+    def __str__(self):
+        return ""
+
+    def new_game(self):
+        if self.player_chips:
+            print "New game?"
+
+    def won(self):
+        print "You won!"
+        self.player_chips += 2 * self.game_chips
+        self.game_chips = 0
+        self.in_play = False
+        self.new_game()
+
+    def lost(self):
+        print "You lost!"
+        self.game_chips = 0
+        self.in_play = False
+        self.new_game()
+
+    def tie(self):
+        print "It's a tie!"
+        self.player_chips += self.game_chips
+        self.game_chips = 0
+        self.in_play = False
+        self.new_game()
+
+    def deal(self, chips=1):
+        if self.player_chips <= 0 or chips > self.player_chips:
+            raise Exception("No enough chips.")
+        self.in_play = True
+        self.deck = Deck()
+        self.dealer = Hand()
+        self.player = Hand()
+        self.player_chips -= chips
+        self.game_chips = chips
+        for x in range(2):
+            self.dealer.hit(self.deck)
+            self.player.hit(self.deck)
+
+    def hit(self):
+        if not self.in_play:
+            return
+        try:
+            self.player.hit(self.deck)
+        except Exception:
+            self.in_play = False
+            print "You went bust!"
+            self.lost()
+
+        if self.player.get_value() == 21:
+            print "Black Jack!"
+            self.won()
+
+    def stand(self):
+        if not self.in_play:
+            return
+
+        while self.dealer.get_value() < 17:
+            try:
+                self.dealer.hit(self.deck)
+            except Exception:
+                print "Dealer Busted!"                
+                self.won()
+            else:    
+                if self.player.get_value() > self.dealer.get_value():
+                    self.won()
+                if self.player.get_value() < self.dealer.get_value():
+                    self.lost()
+                else:
+                    self.tie()
+
+
+def play():
     pass
-
-
-def hit():
-    pass
-
-
-def stand():
-    pass
+    
+if __name__ == "__main__":
+    play()
