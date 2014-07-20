@@ -90,12 +90,21 @@ class Deck(object):
 
 class Game(object):
     def __init__(self):
-        self.deal()
+        self.in_play = True
         self.player_chips = 100
         self.game_chips = 0
+        self.deal()
 
     def __str__(self):
-        return ""
+        if not self.in_play:
+            return ""    
+        return """
+Game:
+Game chips: %d
+Dealer hand: %s
+Player hand: %s
+Player chips: %s
+        """ % (self.game_chips, str(self.dealer), str(self.player), self.player_chips)
 
     def new_game(self):
         if self.player_chips:
@@ -168,7 +177,35 @@ class Game(object):
 
 
 def play():
-    pass
-    
+    game = Game()
+    try:
+        while True:
+            
+            try:
+                while True:
+                    print str(game)
+                    selection = raw_input("Do you whan to (h)it or to (s)tand: ")
+                    if selection == "h":
+                        game.hit()
+                    elif selection == "s":
+                        game.stand()
+                        raise Exception
+                    else:
+                        print "Wrong selection..."
+            except:
+                selection_flag = True
+                while selection_flag:
+                    selection = raw_input("New (d)eal? or (e)xit: ")
+                    if selection == "d":
+                        game.deal(1)
+                        selection_flag = False
+                    elif selection == "e":
+                        raise Exception
+                    else:
+                       print "Wrong selection..." 
+    except:
+        print "See you next time"
+
+
 if __name__ == "__main__":
     play()
