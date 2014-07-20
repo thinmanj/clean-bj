@@ -161,7 +161,42 @@ class HandBusted(HandBasics):
 
 
 class DeckBasics(TestCase):
-    pass
+    def setUp(self):
+        self.deck = Deck()
+
+
+class DeckClass(TestCase):
+    def test_type_of_instance(self):
+        self.assertEqual(type(Deck()), Deck)
+
+
+class DeckLenght(DeckBasics):
+    def test_be_defined(self):
+        self.assertTrue(hasattr(Deck, '__len__'))
+
+    def test_return_deck_length(self):
+        self.assertEqual(len(self.deck), 52)
+
+
+class DeckStr(DeckBasics):
+    def test_be_defined(self):
+        self.assertTrue(hasattr(Deck, '__str__'))
+
+    def test_return_a_string(self):
+        self.assertEqual(type(self.deck.__str__()), str)
+
+
+class DeckShuffle(DeckBasics):
+    def test_be_defined(self):
+        self.assertTrue(hasattr(Deck, 'shuffle'))
+
+
+class DeckDealCard(DeckBasics):
+    def test_be_defined(self):
+        self.assertTrue(hasattr(Deck, 'deal_card'))
+
+    def test_should_return_a_card(self):
+        self.assertEqual(type(self.deck.deal_card()), Card)
 
 
 if __name__ == "__main__":
